@@ -1,0 +1,38 @@
+{
+  "name": "imthon.3oy",
+  "version": "1.0.0",
+  "description": "-> Saytga kirganda birinchi registratsiya okno'si chiqadi.  Siz registratsiya qilganizdan song contact va groups yaratasiz, kontactlar database'ga saqlanadi. Bular yaratilganddan song oxirisida contact_groups''da gruppalar yaratiladi, Masalan: Dostlar, Qarindoshlar.",
+  "main": "index.js",
+  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Toxir707/Imtihon.3oy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Toxir707/Imtihon.3oy/issues"
+  },
+  "homepage": "https://github.com/Toxir707/Imtihon.3oy#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^6.10.1",
+    "winston": "^3.17.0"
+  }
+}
