@@ -1,3 +1,6 @@
+## Loyihaning maqsadi 
+- Imthondan o'tish
+
 ## Foydalanuvchi talablaqri
 - Foydalanuvchi accaunt yaratishi kerak
 - Foydalanuvchi accaunt yaratgandan song database'da saqlanishi kerak
