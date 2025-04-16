@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "-> Saytga kirganda birinchi registratsiya okno'si chiqadi.  Siz registratsiya qilganizdan song contact va groups yaratasiz, kontactlar database'ga saqlanadi. Bular yaratilganddan song oxirisida contact_groups''da gruppalar yaratiladi, Masalan: Dostlar, Qarindoshlar.",
   "main": "index.js",
-  
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/main.js",
+    "start:dev": "nodemon src/main.js"
   },
   "repository": {
     "type": "git",
