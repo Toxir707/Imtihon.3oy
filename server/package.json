@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/main.js",
-    "start:dev": "nodemon src/main.js"
+    "start": "node src/server.js",
+    "start:dev": "set NODE_ENV=develop & nodemon src/main.js",
+    "start:prod": "set NODE_ENV=production & nodemon src/main.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,9 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
