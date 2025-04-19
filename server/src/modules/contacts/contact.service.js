@@ -7,7 +7,7 @@ class ContactService{
     }
 
     async getContactById(id) {
-        const findContact = await this.contactModel.findbyId(id)
+        const findContact = await this.contactModel.findById(id)
         if (!findContact) {
             throw new BaseException('Category not found', 409);
         }
@@ -15,7 +15,7 @@ class ContactService{
     }
 
     async getAllContact() {
-        const findContact = await this.contactModel.find().populate("user")
+        const findContact = await this.contactModel.find().populate("userId")
         return findContact
     }
 

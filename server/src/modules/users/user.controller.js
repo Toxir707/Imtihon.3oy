@@ -19,6 +19,14 @@ export const getUserById = async (req, res) => {
 });
 };
 
+export const getAllUser = async (req , res) => {
+  const user = await userService.getAllUser();
+  res.send({
+    message: "success",
+    data: user
+});
+};
+
 export const register = async (req, res) => {
   const { error, value } = registerSchema.validate(req.body);
   console.log(error, value);
@@ -59,6 +67,8 @@ export const register = async (req, res) => {
   res.status(201).send({
     message: "Yaratildi",
     data: newUser,
+    accessToken,
+    refreshToken
   });
 };
 
