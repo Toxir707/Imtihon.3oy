@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// import Contact from "../contacts/contact.model.js";
 
 const UserSchema = mongoose.Schema(
     {
@@ -16,9 +15,13 @@ const UserSchema = mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             required: true
         },
+        imageUrl: {
+            type: mongoose.SchemaTypes.String,
+            required: false
+        },
         contact: {
             type: mongoose.SchemaTypes.Array,
-            ref: "Contact"
+            ref: "Group"
         }
     },
     {

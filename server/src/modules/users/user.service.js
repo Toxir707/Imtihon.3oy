@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import Group from "../groups/group.model.js";
 import { BaseException } from "../../exception/base.exception.js";
 import User from "./user.model.js";
 
@@ -6,40 +7,56 @@ class UserService {
   constructor() {
     this.userModel = User;
   }
+
   async findUserById(id) {
-    const findUser = await this.userModel.findById(id)
+    const findUser = await this.userModel.findById(id);
     if (!findUser) {
-        throw new BaseException("User hali ro'yhatdan o'tmagan", 409);
+      throw new BaseException("User hali ro'yhatdan o'tmagan", 409);
     }
-    return findUser
+    return findUser;
   }
 
-  async getAllUser() {
-    const findUser = await this.userModel.find().populate("contact")
-    return findUser
-  }
+  async getAllUser(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
 
-  async registerUser({name, email, password}) {
+    const [users, total] = await Promise.all([
+      this.userModel.find()
+        .populate("Group")
+        .skip(skip)
+        .limit(limit),
+      this.userModel.countDocuments()
+    ]);
+
+    return {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalUsers: total,
+      users
+    };
+  };
+
+  async registerUsers({ name, email, password }) {
     const findUser = await this.userModel.findOne({ email });
     if (findUser) {
       throw new BaseException("Siz ro'yhatdan o'tib bo'lgansiz", 409);
     }
-    const passwordHash =await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
     const newUser = await this.userModel.create({
       name,
       email,
       password: passwordHash,
     });
-    return newUser
+    return newUser;
   }
 
-  async loginUser({email, password}) {
+  async loginUsers({ email, password }) {
     const findUser = await this.userModel.findOne({ email });
     if (!findUser) {
-        throw new BaseException("Siz hali ro'yhatdan o'tmagansiz", 409);
+      throw new BaseException("Siz hali ro'yhatdan o'tmagansiz", 409);
     }
-    if (!(await bcrypt.compare(password,findUser.password))) {
-        throw new BaseException("Parol xato kiritilgan !", 409);
+    const isPasswordMatch = await bcrypt.compare(password, findUser.password);
+    if (!isPasswordMatch) {
+      throw new BaseException("Parol xato kiritilgan !", 409);
     }
     return findUser;
   }
@@ -47,12 +64,12 @@ class UserService {
   async deleteUserById(id) {
     const findUser = await this.userModel.findOneAndDelete(id);
     if (!findUser) {
-        throw new BaseException("User hali ro'yhatdan o'tmagan", 409);
+      throw new BaseException("User hali ro'yhatdan o'tmagan", 409);
     }
     return {
-        message: "success",
-        data: findUser
-    }
+      message: "success",
+      data: findUser,
+    };
   }
 
   async updateUserById(id, data) {
@@ -63,10 +80,11 @@ class UserService {
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       { $set: data },
-      { new: true }   
+      { new: true }
     );
-    return updatedUser
+    return updatedUser;
   }
 }
+
 
 export default new UserService();

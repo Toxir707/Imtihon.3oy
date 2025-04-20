@@ -1,4 +1,4 @@
-import { registerSchema } from "../dtos/register.schema.js";
+import { registerUser, loginUser } from "../dtos/user/user.schema.js";
 import jwt from "jsonwebtoken";
 import userService from "./user.service.js";
 import {
@@ -8,7 +8,6 @@ import {
     REFRESH_TOKEN_SECRET,
   } from "../../config/jwt.config.js";
 import { BaseException } from "../../exception/base.exception.js";
-import { loginSchema } from "../dtos/login.schema.js";
 
 export const getUserById = async (req, res) => {
   const id = req.params.id;
@@ -28,14 +27,15 @@ export const getAllUser = async (req , res) => {
 };
 
 export const register = async (req, res) => {
-  const { error, value } = registerSchema.validate(req.body);
-  console.log(error, value);
+  const { error, value } = registerUser.validate(req.body);
   
   if (error) {
     throw new BaseException(error.message,400);
   }
+  // const file = req.file;
+  // const imageUrl = `/uploads/${file.mimetype.split("/")[0]}/${file.filename}`
 
-  const newUser = await userService.registerUser(req.body);
+  const newUser = await userService.registerUsers(req.body);
   const payload = { id: newUser.id }
   
   const accessToken = jwt.sign(
@@ -73,13 +73,13 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req,res) => {
-  const {error, value} = loginSchema.validate(req.body)
+  const {error, value} = loginUser.validate(req.body)
 
   if (error) {
     throw new BaseException(error.message,400);
   }
 
-  const user = await userService.loginUser(req.body)
+  const user = await userService.loginUsers(req.body)
 
   const accessToken = jwt.sign(
     { id: user.id },
@@ -123,7 +123,7 @@ export const deleteUser = async (req, res) => {
 
 export const updateUser=async (req,res) => {
   const id = req.params.id; 
-  const { email, name }=req.body
+  const { email, name } = req.body
   const user = await userService.updateUserById(id, { email, name });
   res.send({
     message:"succes",
