@@ -21,7 +21,7 @@ const UserSchema = mongoose.Schema(
         },
         group: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Group", // bu `Group` model nomi bilan bir xil bo‘lishi kerak
+            ref: "Group", 
             required: false,
         }]
     },

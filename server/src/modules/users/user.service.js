@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import Group from "../groups/group.model.js";
 import { BaseException } from "../../exception/base.exception.js";
 import User from "./user.model.js";
 
@@ -20,20 +19,26 @@ class UserService {
     const skip = (page - 1) * limit;
 
     const [users, total] = await Promise.all([
-      this.userModel.find()
-        .populate("group") 
+      this.userModel
+        .find()
+        .populate({
+          path: "group",
+          populate: {
+            path: "contacts", // bu group modelidagi contact field nomi
+          },
+        })
         .skip(skip)
         .limit(limit),
-      this.userModel.countDocuments()
+      this.userModel.countDocuments(),
     ]);
 
     return {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalUsers: total,
-      users
+      users,
     };
-  };
+  }
 
   async registerUsers({ name, email, password, group }) {
     const findUser = await this.userModel.findOne({ email });
@@ -45,7 +50,7 @@ class UserService {
       name,
       email,
       password: passwordHash,
-      group
+      group,
     });
     return newUser;
   }
@@ -86,6 +91,5 @@ class UserService {
     return updatedUser;
   }
 }
-
 
 export default new UserService();
