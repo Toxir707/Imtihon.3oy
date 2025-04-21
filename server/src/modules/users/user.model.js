@@ -19,10 +19,11 @@ const UserSchema = mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             required: false
         },
-        contact: {
-            type: mongoose.SchemaTypes.Array,
-            ref: "Group"
-        }
+        group: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Group", // bu `Group` model nomi bilan bir xil bo‘lishi kerak
+            required: false,
+        }]
     },
     {
         collection: "users", 

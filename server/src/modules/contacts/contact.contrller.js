@@ -1,3 +1,4 @@
+import Group from "../groups/group.model.js";
 import contactService from "./contact.service.js";
 
 export const AllContacts = async(req, res) => {
@@ -20,6 +21,9 @@ export const ContactById = async (req, res) => {
 export const createContact = async (req, res) => {
     const {userId, first_name, phone} = req.body;
     const contact = await contactService.createContact(userId, first_name, phone)
+    await Group.findByIdAndUpdate(userId, {
+        $push: { contacts: contact._id }
+    });
     res.send({
         message: "succes",
         data: contact

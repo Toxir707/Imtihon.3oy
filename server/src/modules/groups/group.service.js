@@ -15,7 +15,7 @@ class GroupService {
     }
 
     async getAllGroup() {
-        const findGroup = await this.groupModel.find();
+        const findGroup = await this.groupModel.find().populate("contacts");
         return findGroup;
     }
 

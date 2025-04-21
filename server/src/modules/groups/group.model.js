@@ -9,7 +9,13 @@ const GroupSchema = mongoose.Schema(
         grname: {
             type: mongoose.SchemaTypes.String,
             required: true
-        }
+        },
+        contacts: [
+            {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "Contact"
+            }
+        ]
     },
     {
         collection: "groups", 

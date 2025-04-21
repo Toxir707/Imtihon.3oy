@@ -1,37 +1,37 @@
 import jwt from "jsonwebtoken";
 import {
-  ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_EXPIRE_TIME,
+  ACCESS_TOKEN_EXPIRE_TIME,
   REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRE_TIME,
 } from "../config/jwt.config.js";
 import { BaseException } from "../exception/base.exception.js";
+import { isValidObjectId } from "mongoose";
 
 export const Protected = (isProtected) => {
   return (req, res, next) => {
     if (!isProtected) {
+      
       req.role = "VIEWER";
       return next();
     }
-
+    
     let accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.refreshToken;
-
+    let refreshToken = req.cookies.refreshToken;
     if (!accessToken && !refreshToken) {
-      return res.redirect("/login");
+      return res.redirect("/user/login");
     }
-
-    // accessToken bo‘lmasa, refreshToken orqali yangilashga harakat qilamiz
+    
     if (!accessToken && refreshToken) {
       try {
-        const data = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+        const { role, id } = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+        const payload = { role, id };
 
-        accessToken = jwt.sign({ ...data }, ACCESS_TOKEN_SECRET, {
-          expiresIn: +ACCESS_TOKEN_EXPIRE_TIME,
+        accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+          expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
         });
-
-        const newRefreshToken = jwt.sign({ ...data }, REFRESH_TOKEN_SECRET, {
-          expiresIn: +REFRESH_TOKEN_EXPIRE_TIME,
+        refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
+          expiresIn: REFRESH_TOKEN_EXPIRE_TIME,
         });
 
         res.cookie("accessToken", accessToken, {
@@ -39,31 +39,65 @@ export const Protected = (isProtected) => {
           httpOnly: true,
         });
 
-        res.cookie("refreshToken", newRefreshToken, {
+        res.cookie("refreshToken", refreshToken, {
           maxAge: +REFRESH_TOKEN_EXPIRE_TIME * 1000,
           httpOnly: true,
         });
 
-        return res.redirect(req.url);
+        const data = { id, role };
+        res.cookie("user", JSON.stringify(data));
+        return next();
       } catch (err) {
-        return next(new BaseException("Refresh token yaroqsiz", 403));
+        console.log(err);
+        
+        return next(new BaseException("Refresh token notogri", 401));
       }
     }
 
     try {
+      
       const decodedData = jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
 
       req.role = decodedData.role;
-      req.user = decodedData.user;
-
+      req.user = decodedData; 
       next();
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
+        try {
+          if (refreshToken) {
+            const { role, id } = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+            const payload = { role, id };
+
+            accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+              expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
+            });
+            refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
+              expiresIn: REFRESH_TOKEN_EXPIRE_TIME,
+            });
+
+            res.cookie("accessToken", accessToken, {
+              maxAge: +ACCESS_TOKEN_EXPIRE_TIME * 1000,
+              httpOnly: true,
+            });
+
+            res.cookie("refreshToken", refreshToken, {
+              maxAge: +REFRESH_TOKEN_EXPIRE_TIME * 1000,
+              httpOnly: true, 
+            });
+            const data = { id, role };
+            res.cookie("user", JSON.stringify(data));
+            return next();
+          }
+        } catch (err) {
+          next(err)
+        }
         return next(new BaseException("Token muddati eskirgan", 406));
       } else if (err instanceof jwt.JsonWebTokenError) {
-        return next(new BaseException("JWT token xato formatda yuborildi", 400));
+        return next(
+          new BaseException("JWT token xato formatda yuborildi", 400)
+        );
       } else if (err instanceof jwt.NotBeforeError) {
-        return next(new BaseException("Not Before Error", 409));
+        return next(new BaseException("Token hali kuchga kirmagan", 409));
       } else {
         next(err);
       }

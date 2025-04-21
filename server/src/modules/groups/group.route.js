@@ -12,7 +12,7 @@ const groupRouter = Router()
 
 groupRouter 
     .get("/:id", Protected(true), Roles(ROLES.ALL), GroupById)
-    .get("/", Protected(true), Roles(ROLES.OWNER,ROLES.SUPER_ADMIN), AllGroups)
+    .get("/", Protected(true), Roles(ROLES.ALL), AllGroups)
     .post("/create", Protected(false), Roles(ROLES.ALL), ValidationMiddleware(createGroups), createGroup)
     .put("/update/:id", Protected(false), Roles(ROLES.ALL), ValidationMiddleware(updateGroup), updateGroups)
     .delete("/delete",  Protected(true), Roles(ROLES.ALL), deleteGroups)

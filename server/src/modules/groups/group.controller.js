@@ -1,3 +1,4 @@
+import User from "../users/user.model.js";
 import groupService from "./group.service.js";
 
 export const AllGroups = async(req, res) => {
@@ -20,6 +21,9 @@ export const GroupById = async(req, res) => {
 export const createGroup = async(req, res) => {
     const { userId, grname } = req.body;
     const groups = await groupService.createGroup(userId, grname);
+    await User.findByIdAndUpdate(userId, {
+        $set: { group: groups._id },
+    });
     res.send({
         message: "succes",
         data: groups

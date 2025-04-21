@@ -11,7 +11,7 @@ const contactRouter = Router();
 
 contactRouter
     .get("/:id", Protected(true), Roles(ROLES.ALL), ContactById)
-    .get("/", Protected(true), Roles(ROLES.OWNER,ROLES.SUPER_ADMIN), AllContacts)
+    .get("/", Protected(true), Roles(ROLES.ALL), AllContacts)
     .post("/create",  Protected(false), Roles(ROLES.ALL), ValidationMiddleware(createContacts), createContact)
     .put("/update", Protected(false), Roles(ROLES.ALL), ValidationMiddleware(updateContacts), updateContact)
     .delete("/delete", Protected(true), Roles(ROLES.ALL), deletedContact)

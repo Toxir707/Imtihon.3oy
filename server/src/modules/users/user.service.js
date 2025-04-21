@@ -21,7 +21,7 @@ class UserService {
 
     const [users, total] = await Promise.all([
       this.userModel.find()
-        .populate("Group")
+        .populate("group") 
         .skip(skip)
         .limit(limit),
       this.userModel.countDocuments()
@@ -35,7 +35,7 @@ class UserService {
     };
   };
 
-  async registerUsers({ name, email, password }) {
+  async registerUsers({ name, email, password, group }) {
     const findUser = await this.userModel.findOne({ email });
     if (findUser) {
       throw new BaseException("Siz ro'yhatdan o'tib bo'lgansiz", 409);
@@ -45,6 +45,7 @@ class UserService {
       name,
       email,
       password: passwordHash,
+      group
     });
     return newUser;
   }

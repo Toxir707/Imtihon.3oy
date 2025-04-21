@@ -15,7 +15,7 @@ class ContactService{
     }
 
     async getAllContact() {
-        const findContact = await this.contactModel.find().populate("userId")
+        const findContact = await this.contactModel.find()
         return findContact
     }
 

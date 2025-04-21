@@ -13,7 +13,7 @@ const userRouter = Router()
 userRouter
     .post("/register", upload.single("image"), Protected(false), Roles(ROLES.ALL),ValidationMiddleware(registerUser), register)
     .get("/:id", Protected(true), Roles(ROLES.ALL), getUserById)
-    .get("/", Protected(true), Roles(ROLES.OWNER,ROLES.SUPER_ADMIN), getAllUser)
+    .get("/", Protected(true), Roles(ROLES.ALL), getAllUser)
     .post("/login", Protected(false), Roles(ROLES.ALL), ValidationMiddleware(loginUser), login)
     .delete("/delete/:id", Protected(true), Roles(ROLES.ALL), deleteUser)
     .put("/update/:id", Protected(true), Roles(ROLES.ALL), updateUser)
