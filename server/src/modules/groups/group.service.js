@@ -23,7 +23,7 @@ class GroupService {
         const findGroup = await this.groupModel.findOne({ grname });
 
         if (findGroup) {
-            throw new BaseException('Group with this name already exists', 409);
+            throw new BaseException('Bu nomli guruh allaqachon mavjud', 409);
         }
 
         const newGroup = await this.groupModel.create({
@@ -36,7 +36,6 @@ class GroupService {
 
     async updateGroupById(groupId, updateData) {
         const findGroup = await this.groupModel.findById(groupId)
-        console.log("bu updatedata",updateData);
         
         if (!findGroup) {
             throw new BaseException("Group not found", 409);

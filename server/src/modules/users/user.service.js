@@ -24,7 +24,7 @@ class UserService {
         .populate({
           path: "group",
           populate: {
-            path: "contacts", // bu group modelidagi contact field nomi
+            path: "contacts", 
           },
         })
         .skip(skip)

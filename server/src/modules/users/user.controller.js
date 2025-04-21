@@ -32,8 +32,8 @@ export const register = async (req, res) => {
   if (error) {
     throw new BaseException(error.message,400);
   }
-  // const file = req.file;
-  // const imageUrl = `/uploads/${file.mimetype.split("/")[0]}/${file.filename}`
+  const file = req.file;
+  const imageUrl = `/uploads/${file.mimetype.split("/")[0]}/${file.filename}`
 
   const newUser = await userService.registerUsers(req.body);
   const payload = { id: newUser.id }

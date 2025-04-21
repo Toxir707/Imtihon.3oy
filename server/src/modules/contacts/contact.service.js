@@ -23,7 +23,7 @@ class ContactService{
         const findContact = await this.contactModel.findOne({ phone });
     
         if (findContact) {
-            throw new BaseException('Contact with this phone already exists', 409);
+            throw new BaseException('Bu phone bilan aloqa allaqachon mavjud', 409);
         }
     
         const newContact = await this.contactModel.create({
